@@ -24,7 +24,7 @@ class User:
     """
     this class created to organize user registration 
     """
-    def __init__(self, registration_date:datetime.datetime, nickname: str, school_grade: str, subjects_user_know: list, subjects_to_learn: list, profile_photo: Image) -> None:
+    def __init__(self, registration_date: str, nickname: str, school_grade: str, subjects_user_know: list, subjects_to_learn: list, profile_photo: Image) -> None:
         self.registration_date = registration_date
         self.nickname = nickname
         self.school_grade = school_grade

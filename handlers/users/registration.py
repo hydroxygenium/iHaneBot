@@ -1,5 +1,6 @@
-import datetime
+import datetime #to store the user's registration datetime 
 import logging
+from types import NoneType #for logging
 import aiogram.utils.markdown as md
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -80,7 +81,7 @@ async def process_school_grade(message: types.Message, state: FSMContext):
 
    await message.reply("Предметы в которых ты шаришь? напиши через запятую")
 
-@dp.message_handler(lambda message: len(message.text.split())>=1, state=Form.subjects_user_know)
+@dp.message_handler(lambda message: len(message.text.split())<=1, state=Form.subjects_user_know)
 async def process_subject_user_know_invalid(message: types.Message):
    """
    In this corutine lenth of list of subjects user know has to be greater than or equal to 1
@@ -95,7 +96,7 @@ async def process_subjects_user_know(message: types.Message, state: FSMContext):
    await Form.next()
    await message.reply("Предметы в которых ты хочешь шарить? Перечисли через запятую.")
 
-@dp.message_handler(lambda message: len(message.text.split())>=1, state=Form.subjects_to_learn)
+@dp.message_handler(lambda message: len(message.text.split())<=1, state=Form.subjects_to_learn)
 async def process_subject_to_know_invalid(message: types.Message):
    """
    In this corutine lenth of list of subjects user want to know has to be greater than or equal to 1
@@ -105,18 +106,29 @@ async def process_subject_to_know_invalid(message: types.Message):
 @dp.message_handler(state=Form.subjects_to_know)
 async def process_subjects_to_know(message: types.Message, state: FSMContext):
    async with state.proxy() as data:
+      user_registration_datetime = str(datatime.datetime.now())
+
       data['subjects_to_know'] = message.text
       # Remove keyboard
       markup = types.ReplyKeyboardRemove()
+      
+      #for sending it to a db_handler
+      user = User(
+         datetime.datetime.now,
+         data['nickname'],
+         data['school_grade'],
+         data['subjects_user_know'],
+         data['subjects_to_know'],
+      )
 
       # And send message
       await bot.send_message(
          message.chat.id,
          md.text(
-            md.text('Hi! Nice to meet you,', md.bold(data['nickname'])),
-            md.text('School grade:', md.code(data['school_grade'])),
-            md.text('Subjects that you know:', data['subjects_user_know']),
-            md.text('Subjects that you want to know:', data['subjects_to_know']),
+            md.text('Твой никнейм: ', md.bold(data['nickname'])),
+            md.text('Год обучения: ', md.code(data['school_grade'])),
+            md.text('Предметы в которых ты шаришь: ', data['subjects_user_know']),
+            md.text('Предметы в которых ты хочешь шарить: ', data['subjects_to_know']),
             sep='\n',
          ),
          reply_markup=markup,
@@ -125,7 +137,3 @@ async def process_subjects_to_know(message: types.Message, state: FSMContext):
 
    # Finish conversation
    await state.finish()
-
-
-with FSMContext.proxy() as data:
-   user = User(datetime.datetime.now, data['nickname'], data['school_grade'], data['subjects_user_know'], data['subjects_to_know'], )
