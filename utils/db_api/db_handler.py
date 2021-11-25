@@ -24,7 +24,14 @@ class User:
     """
     this class created to organize user registration 
     """
-    def __init__(self, registration_date: str, nickname: str, school_grade: str, subjects_user_know: list, subjects_to_learn: list, profile_photo: Image) -> None:
+    def __init__(self, 
+            registration_date: str, 
+            nickname: str, 
+            school_grade: str, 
+            subjects_user_know: list, 
+            subjects_to_learn: list, 
+            profile_photo: Image
+        ) -> None:
         self.registration_date = registration_date
         self.nickname = nickname
         self.school_grade = school_grade
@@ -43,11 +50,21 @@ class User:
 
     def get_user_data(self) -> list:
         """to insert data into db"""
-        return (str(self.registration_date), self.nickname, self.school_grade, str(self.subjects_user_know), self.subjects_to_learn, self.convert_image_to_blob())
+        return (str(
+            self.registration_date), 
+            self.nickname, 
+            self.school_grade, 
+            str(self.subjects_user_know), 
+            self.subjects_to_learn, 
+            self.convert_image_to_blob()
+        )
 
     def add_user_to_db(self):
 
         user_data = self.get_user_data()
         
-        cur.execute("INSERT INTO users VALUES(?, ?, ?, ?, ?, ?);", user)
+        cur.execute(
+                "INSERT INTO users VALUES(?, ?, ?, ?, ?, ?);", 
+                user,
+        )
         conn.commit()
