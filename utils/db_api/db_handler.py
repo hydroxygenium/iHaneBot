@@ -1,7 +1,7 @@
 import sqlite3
 import datetime
 import io #to convert image to blob format to insert it to database
-from PIL import Image
+# from PIL import Image
 conn = sqlite3.connect('UserData.db')
 cur = conn.cursor()
 

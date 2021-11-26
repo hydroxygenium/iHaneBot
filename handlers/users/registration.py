@@ -1,6 +1,6 @@
 import datetime #to store the user's registration datetime 
 import logging
-from types import NoneType #for logging
+#from types import NoneType #for logging
 import aiogram.utils.markdown as md
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -30,7 +30,7 @@ async def registration_start(message: types.Message):
    Conversation's entry point
    """
    # Set state
-   await Form.name.set()
+   await Form.nickname.set()
 
    await message.reply("Твой Никнейм?")
 
