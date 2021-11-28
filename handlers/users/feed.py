@@ -36,7 +36,7 @@ async def process_show_resumes(message: Message):
 async def resume_update(query: CallbackQuery):
     
     reply_markup = InlineKeyboardMarkup().add(
-        InlineKeyboardButton(text="Дальше", callback_data="dont_click_me")
+        InlineKeyboardButton(text="Дальше", callback_data="update_resume")
     )
     try:
         resume = data_to_show.pop()
