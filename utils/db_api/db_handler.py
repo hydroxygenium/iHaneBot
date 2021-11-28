@@ -56,16 +56,16 @@ class User:
             self.nickname, 
             self.school_grade, 
             str(self.subjects_user_know), 
-            self.subjects_to_learn 
+            str(self.subjects_to_learn) 
             # self.convert_image_to_blob()
         )
 
-    def save_to_db(self):
+    def save_to_db(self) -> None:
 
         user_data = self.get_user_data()
         
         cur.execute(
                 "INSERT INTO users VALUES(?, ?, ?, ?, ?);", 
-                user,
+                user_data,
         )
         conn.commit()

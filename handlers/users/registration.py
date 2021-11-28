@@ -10,7 +10,7 @@ from aiogram.types import Message
 from aiogram.types import reply_keyboard
 from aiogram.types.reply_keyboard import ReplyKeyboardMarkup
 from aiogram.types import ParseMode
-import data
+# import data
 from keyboards.default import menu
 from loader import dp, bot
 from utils import db_api
@@ -58,6 +58,7 @@ async def process_nick_name(message: types.Message, state: FSMContext):
    """
    Process user nickname
    """
+
    async with state.proxy() as data:
       data['nickname'] = message.text
 
@@ -71,14 +72,17 @@ async def process_school_grade_invalid(message: types.Message):
    """
    If school_grade is invalid
    """
-   return await message.rep("Год обучения должен быть числом! Введите снова")
+   return await message.reply("Год обучения должен быть числом! Введите снова")
 
 @dp.message_handler(lambda message: message.text.isdigit(), state=Form.school_grade)
 async def process_school_grade(message: types.Message, state: FSMContext):
    # Update state and data
-   await Form.next()
-   await state.update_data(age=int(message.text))
 
+   # await state.update_data(school_grade=int(message.text))
+   async with state.proxy() as data:
+      data['school_grade'] = message.text
+
+   await Form.next()
    await message.reply("Предметы в которых ты шаришь? напиши через запятую")
 
 @dp.message_handler(lambda message: len(message.text.split())<=1, state=Form.subjects_user_know)
@@ -101,34 +105,22 @@ async def process_subject_to_know_invalid(message: types.Message):
    """
    In this corutine lenth of list of subjects user want to know has to be greater than or equal to 1
    """
-   return await message.reply("Некоректный ввод, поробуйте по другому!")
+   return await message.reply("Некоректный ввод, попробуйте по другому!")
 
 @dp.message_handler(state=Form.subjects_to_learn)
 async def process_subjects_to_know(message: types.Message, state: FSMContext):
    async with state.proxy() as data:
-      user_registration_datetime = str(datatime.datetime.now())
 
       data['subjects_to_learn'] = message.text
       # Remove keyboard
       markup = types.ReplyKeyboardRemove()
       
-      #for sending it to a db_handler
-      user = User(
-         datetime.datetime.now,
-         data['nickname'],
-         data['school_grade'],
-         data['subjects_user_know'],
-         data['subjects_to_learn'],
-      )
-
-      user.save_to_db()
-
-      # And send message
+            # And send message
       await bot.send_message(
          message.chat.id,
          md.text(
             md.text('Твой никнейм: ', md.bold(data['nickname'])),
-            md.text('Год обучения: ', md.code(data['school_grade'])),
+            md.text('Год обучения: ', data['school_grade']),
             md.text('Предметы в которых ты шаришь: ', data['subjects_user_know']),
             md.text('Предметы в которых ты хочешь шарить: ', data['subjects_to_learn']),
             sep='\n',
@@ -136,6 +128,19 @@ async def process_subjects_to_know(message: types.Message, state: FSMContext):
          reply_markup=markup,
          parse_mode=ParseMode.MARKDOWN,
       )
+
+      user_registration_datetime = str(datetime.datetime.now())
+      #for sending it to a db_handler
+      some_user = User(
+         user_registration_datetime,
+         data['nickname'],
+         data['school_grade'],
+         data['subjects_user_know'],
+         data['subjects_to_learn'],
+      )
+
+      some_user.save_to_db()
+
 
    # Finish conversation
    await state.finish()
