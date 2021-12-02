@@ -21,7 +21,13 @@ async def process_show_resumes(message: Message):
         InlineKeyboardButton(text="Дальше", callback_data="update_resume")
     )
     resume = next(data_to_show)
-    await message.answer(f'ник: {resume[0]}, \nгод обучения:{resume[1]}, \nпредметы в которых шарит: {resume[2]}, \nпредметы в которых хочет шарить: {resume[3]}', reply_markup=reply_markup)
+    text = f"""
+ник: {resume[0]},
+год обучения:{resume[1]},
+предметы в которых шарит: {resume[2]},
+предметы в которых хочет шарить: {resume[3]}
+"""
+    await message.answer(text, reply_markup=reply_markup)
 
 
 @dp.callback_query_handler(text="update_resume")
@@ -31,4 +37,11 @@ async def resume_update(query: CallbackQuery):
         InlineKeyboardButton(text="Дальше", callback_data="update_resume")
     )
     resume = next(data_to_show)
-    await query.message.edit_text(f'ник: {resume[0]}, \nгод обучения:{resume[1]}, \nпредметы в которых шарит: {resume[2]}, \nпредметы в которых хочет шарить: {resume[3]}', reply_markup=reply_markup)
+
+    text = f"""
+ник: {resume[0]},
+год обучения:{resume[1]},
+предметы в которых шарит: {resume[2]},
+предметы в которых хочет шарить: {resume[3]}
+"""
+    await query.message.edit_text(text, reply_markup=reply_markup)
