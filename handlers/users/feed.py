@@ -2,9 +2,9 @@ from aiogram import types
 from loader import dp
 from itertools import cycle
 import utils.db_api.db_handler
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, Message
 from utils.db_api.db_handler import conn, cur
 from aiogram.dispatcher.filters import Command, Text
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, Message
 
 
 
@@ -16,7 +16,7 @@ async def process_show_resumes(message: Message):
     )
     global data_to_show
     data_to_show = cycle(cur.fetchall())
-    
+
     reply_markup = InlineKeyboardMarkup().add(
         InlineKeyboardButton(text="Дальше", callback_data="update_resume")
     )
@@ -32,7 +32,7 @@ async def process_show_resumes(message: Message):
 
 @dp.callback_query_handler(text="update_resume")
 async def resume_update(query: CallbackQuery):
-    
+
     reply_markup = InlineKeyboardMarkup().add(
         InlineKeyboardButton(text="Дальше", callback_data="update_resume")
     )

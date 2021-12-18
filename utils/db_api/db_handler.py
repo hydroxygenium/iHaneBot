@@ -1,5 +1,4 @@
 import sqlite3
-import datetime
 import io #to convert image to blob format to insert it to database
 # from PIL import Image
 conn = sqlite3.connect('UserData.db')
@@ -16,23 +15,26 @@ cur.execute("""
 """)
 #  id INTEGER PRIMARY KEY,
 # profile_photo BLOB NOT NULL
-# add it to the end later when you will be able to handle with photos 
+# add it to the end later when you will be able to handle with photos
 conn.commit()
 
 
 
 class User:
     """
-    this class created to organize user registration 
+    this class created to organize user registration
     """
-    def __init__(self, 
-            registration_date: str, 
-            nickname: str, 
-            school_grade: str, 
-            subjects_user_know: list, 
-            subjects_to_learn: list, 
+    def __init__(self,
+            registration_date: str,
+            nickname: str,
+            school_grade: str,
+            subjects_user_know: list,
+            subjects_to_learn: list,
             # profile_photo: Image # uncomment when you will add the photo
-        ) -> None:
+        ):
+        """
+        constructor
+        """
         self.registration_date = registration_date
         self.nickname = nickname
         self.school_grade = school_grade
@@ -50,22 +52,26 @@ class User:
     #     return imagebytes
 
     def get_user_data(self) -> list:
-        """to insert data into db"""
+        """
+        to insert data into db
+        """
         return (str(
-            self.registration_date), 
-            self.nickname, 
-            self.school_grade, 
-            str(self.subjects_user_know), 
-            str(self.subjects_to_learn) 
+            self.registration_date),
+            self.nickname,
+            self.school_grade,
+            str(self.subjects_user_know),
+            str(self.subjects_to_learn)
             # self.convert_image_to_blob()
         )
 
     def save_to_db(self) -> None:
-
+        """
+        to save data in db
+        """
         user_data = self.get_user_data()
-        
+
         cur.execute(
-                "INSERT INTO users VALUES(?, ?, ?, ?, ?);", 
+                "INSERT INTO users VALUES(?, ?, ?, ?, ?);",
                 user_data,
         )
         conn.commit()
